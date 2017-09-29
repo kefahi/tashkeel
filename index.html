@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+	<head>
+		<meta charset="UTF-8" />
+		<title>تشكيل وتنقيط</title>
+		<style>
+			@font-face {
+				font-family: 'Droid Arabic Naskh';
+				font-style: normal;
+				font-weight: 400;
+				src: url(DroidNaskhRegular.ttf) format('truetype');
+			}
+
+			body { font-family: 'Droid Arabic Naskh', serif; }
+			textarea { font-family: 'Droid Arabic Naskh', serif; }
+
+			.button {
+					/*padding: 16px 32px;*/
+					text-align: center;
+					text-decoration: none;
+					display: inline-block;
+					/*font-size: 16px;
+					margin: 4px 2px;*/
+					transition-duration: 0.4s;
+					cursor: pointer;
+					background-color: white;
+					color: black;
+					border: 2px solid #555555;
+			}
+
+			.button:hover {
+					background-color: #555555;
+					color: white;
+			}
+
+			#display, #displayoverlay {
+				font-family: 'Droid Arabic Naskh', serif;
+				/*font-kerning: none;*/
+				font-weight: normal; 
+				font-size: 2em;
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 200;
+				left: 0;
+				color: grey;
+			}
+
+			#displayoverlay {
+				color: black;
+				z-index: 10;
+			}
+		</style>
+		<script type="text/javascript">
+			function render() {
+
+				source_text = document.getElementById('sourcetext').value;
+
+				thebody = document.getElementById('thebody').value;
+				tashkeel = document.getElementById('tashkeel').value;
+				dots = document.getElementById('dots').value;
+				punct = document.getElementById('punct').value;
+				numbers = document.getElementById('numbers').value;
+
+				// Helps replacing "dotted" letters with undotted version
+				var dotless_map = {
+					'\u0628':'\u066e', '\u062a':'\u066e', '\u062b':'\u066e', // Baa, Taa, Thaa
+					'\u0630':'\u062f',  // Thaal
+					'\u0632':'\u0631',  // Zaay
+					'\u062c':'\u062d', '\u062e':'\u062d', // Haa, Khaa
+					'\u0634':'\u0633', // Sheen
+					'\u0636':'\u0635', // Daad
+					'\u0638':'\u0637', // Thaa
+					'\u063a':'\u0639', // Ghaa
+					'\u0642':'\u066f', // Qaaf
+					'\u0641':'\u06a1', // Faa
+					'\u064a':'\u0649', // Yaa
+					'\u0629':'\u0647', // Taa marbouta
+					'\u0646':'\u06ba' // Noon
+				};
+
+				var punctuations = [ '\u002e', '\u061b', '\u060c', '\u003a', '\u0022'];
+				//text = text.replace(/\d/g, function(c) { return "<span style=\"color:blue\">" + String.fromCharCode(c.charCodeAt(0) + 0x0630) + "</span>"; });
+				//text = text.replace(/[\u064b-\u0655]/g, function(c) { return "<span style=\"color:green\">" + c + "</span>"});
+				var text = "";
+				var overlay = "";
+				for (var i = 0; i < source_text.length; i++) {
+					var c = source_text.charAt(i);
+					var o = c;
+					var code = c.charCodeAt(0);
+					if(c in dotless_map) o = dotless_map[c];
+					if(code >= 0x64b && code <= 0x655) {
+						c = '<span style="color:'+tashkeel+'">' + c + '</span>';
+						o = '<span style="display:none; color: '+thebody+'">' + c + '</span>';
+					}
+
+					// Convert numerals to Oriental Arabic (aka Hindi)
+					if(code >= 0x30 && code <= 0x39) {
+						c = '<span style="color:'+numbers+'">' + String.fromCharCode(code + 0x0630) + '</span>';
+						o = c;
+					}
+
+					// Color puncation marks 
+					if( punctuations.indexOf(c) > -1 ) {
+						c = '<span style="color:'+punct+'">' + c + '</span>';
+						o = '<span style="color:'+punct+'">' + c + '</span>';
+
+					}
+
+					text += c;
+					overlay += o; // No dots no harakat
+				}
+				document.getElementById('display').innerHTML = text;
+				document.getElementById("display").style.color = dots;
+				document.getElementById('displayoverlay').innerHTML = overlay;
+				document.getElementById("displayoverlay").style.color = thebody;
+			};
+
+		</script>
+	</head>
+	<body onload="render();" style="margin:10px;padding:10px;">
+		<form>
+  <textarea id="sourcetext" rows="8" style="width: 100%;" onchange="render();">
+مَرَّت كِتابَةُ اللُّغَةِ العَرَبِيَّةِ بِعِدَّةِ مَراحل. وَقَد واكَبتْ الكِتابَةُ القُرآنيَّةُ تَطوُّرَ اللغةِ العَرَبيِّة. فالخَطُّ القُرآنِيُّ في المَخطوطاتِ القَديمَةِ لا يَذكُرُ إلا الحُروفَ دونَ نِقاطٍ ودونَ حَرَكات (تَشكيل)، وأيضاً دونَ الألفِ في كَثيرٍ مِنَ المَواضِع. وقَد أُضيفَتْ إليهِ النُقَطُ والحَرَكاتُ لاحِقاً لِتَسهيلِ قِراءَتِه.
+
+وأُشيرُ هُنا إلى أنَّ ابنَ سيرينَ كَرِهَ إضافَةَ النُقَطِ، ونُقِلَ عَن ابنِ مَسعودٍ قَولُهُ: "جَرِّدوا القُرآنَ ولا تَخلِطوه بِشَيء" ومَالِكُ يَقول: "لا بأسَ بِالنُقَطِ في المَصاحِفِ التي تَتَعَلَّمُ فيها العُلَماءُ أمّا الأُمَّهاتُ فَلا"، بَينَما النَوَويُّ يَقول: "نَقْطُ المُصحَفِ وشَكْلُهُ مُستَحَبٌّ لأَنَهُ صِيانَةٌ لَهُ مِنَ اللَّحنِ والتَّحريفِ"، ويَقولُ ابنُ مُجاهد: "يَنبَغي ألا يُشَكَّل إلا ما يَشْكُل".
+
+ المُحتَوى العَرَبي 1 2 3 </textarea><br/>
+  <label for="thebody">النص</label> <input id="thebody" type="color" value="#454545" onchange="render();"/> 
+  <label for="tashkeel">التشكيل</label> <input id="tashkeel" type="color" value="#CDD65C" onchange="render();"/> 
+  <label for="dots">النقاط</label> <input id="dots" type="color" value="#A1A0A0" onchange="render();"/>
+  <label for="punct">علامات الترقيم</label> <input id="punct" type="color" value="#E598A3" onchange="render();"/>
+  <label for="numbers">الأرقام</label> <input id="numbers" type="color" value="#404040" onchange="render();"/> 
+  <button type="button" class="button" onclick="render();">إظهار</button>
+</form>
+<hr/>
+<div id="display"> النص النهائي </div>
+<div id="displayoverlay"> النص النهائي. </div>
+</body>
+</html>
