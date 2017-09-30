@@ -76,12 +76,11 @@
 					'\u0641':'\u06a1', // Faa
 					'\u064a':'\u0649', // Yaa
 					'\u0629':'\u0647', // Taa marbouta
-					'\u0646':'\u06ba' // Noon
+					'\u0646':'\u06ba', // Noon
+					'\u0625':'\u0627', '\u0623':'\u0627', '\u0622':'\u0627' // Alef with Hamza below, above and madda
 				};
 
 				var punctuations = [ '\u002e', '\u061b', '\u060c', '\u003a', '\u0022'];
-				//text = text.replace(/\d/g, function(c) { return "<span style=\"color:blue\">" + String.fromCharCode(c.charCodeAt(0) + 0x0630) + "</span>"; });
-				//text = text.replace(/[\u064b-\u0655]/g, function(c) { return "<span style=\"color:green\">" + c + "</span>"});
 				var text = "";
 				var overlay = "";
 				for (var i = 0; i < source_text.length; i++) {
@@ -91,7 +90,7 @@
 					if(c in dotless_map) o = dotless_map[c];
 					if(code >= 0x64b && code <= 0x655) {
 						c = '<span style="color:'+tashkeel+'">' + c + '</span>';
-						o = '<span style="display:none; color: '+thebody+'">' + c + '</span>';
+						o = '<span style="display:none; color:'+tashkeel+';">' + c + '</span>';
 					}
 
 					// Convert numerals to Oriental Arabic (aka Hindi)
