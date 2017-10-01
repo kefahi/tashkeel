@@ -70,6 +70,25 @@
 					var o = c;
 					var code = c.charCodeAt(0);
 					if(c in dotless_map) o = dotless_map[c];
+					// very ugly hack to handle special case of medial noon (until the font itself is fixed)
+					if(code == 0x0646 && i+1 < source_text.length) {
+						next = source_text.charAt(i+1).charCodeAt(0);
+						console.log("Noon was found folled by " + next.toString(16));
+						if(next >= 0x0622 && next <= 0x064a) {
+							o = '\u066e';
+						} else if (next >= 0x64b && next <= 0x655 && i+2 < source_text.length) {
+							nn = source_text.charAt(i+2).charCodeAt(0);
+							if(nn >= 0x0622 && nn <= 0x064a) {
+								o = '\u066e';
+							} else if (nn >= 0x64b && nn <= 0x655 && i+3 < source_text.length) {
+								nnn = source_text.charAt(i+3).charCodeAt(0);
+								if( nnn >= 0x0622 && nnn <= 0x064a) {
+									o = '\u066e';
+								}
+							}
+						}
+
+					}
 					if(code >= 0x64b && code <= 0x655) {
 						c = '<span style="color:'+tashkeel+'">' + c + '</span>';
 						o = '<span style="display:none; color:'+tashkeel+';">' + c + '</span>';
